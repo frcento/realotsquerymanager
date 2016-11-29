@@ -1617,7 +1617,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			std::cout << "Determining WorldType" << std::endl;
 			NetworkMessage writeMsg;
 			writeMsg.addByte(0x00);       // Error code
-			writeMsg.addByte(0);          // World Type (0 = normal pvp, 1 = non-pvp, 2 = pvp enforced)
+			writeMsg.addByte(g_config.getNumber(ConfigManager::WORLD_TYPE)); // World Type (0 = normal pvp, 1 = non-pvp, 2 = pvp enforced)
 			writeMsg.addByte(g_config.getNumber(ConfigManager::SERVERSAVE_H)); // Reboot time (0x09 = 09:00)
 
 			/* IP Address to bind, consider using inet_aton */
@@ -1639,10 +1639,10 @@ THREAD_RETURN ConnectionHandler(void* dat)
 
 			/* Some free account / premmy player buffers, not a clue which are which */
 			// Reboot + Port + PremBuffer + MaxN00bs + PremN00bs
-			writeMsg.addU16(1500); // Maxplayers
-			writeMsg.addU16(900);  // PremBuffer
-			writeMsg.addU16(500); // MaxNewbies
-			writeMsg.addU16(250); // Reserved for Premn00bs
+			writeMsg.addU16(g_config.getNumber(ConfigManager::MAX_PLAYERS)); // Maxplayers
+			writeMsg.addU16(g_config.getNumber(ConfigManager::PREM_BUFFER));  // PremBuffer
+			writeMsg.addU16(g_config.getNumber(ConfigManager::MAX_PLAYERS_NEWBIES)); // MaxNewbies
+			writeMsg.addU16(g_config.getNumber(ConfigManager::RESERVED_PREM_NEWBIES)); // Reserved for Premn00bs
 			writeMsg.WriteToSocket(socket);
 
 			// We should probably close the socket after this request.

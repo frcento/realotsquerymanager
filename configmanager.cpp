@@ -61,7 +61,12 @@ bool ConfigManager::load()
 
 		integer[PORT] = getGlobalNumber(L, "port", 17778);
 		integer[GAMEPORT] = getGlobalNumber(L, "gamePort", 7172);
+		integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers", 1500);
+		integer[MAX_PLAYERS_NEWBIES] = getGlobalNumber(L, "maxPlayersNewbies", 500);
+		integer[PREM_BUFFER] = getGlobalNumber(L, "premBuffer", 900);
+		integer[RESERVED_PREM_NEWBIES] = getGlobalNumber(L, "reservedPremiumNewbies", 250);
 		integer[SERVERSAVE_H] = getGlobalNumber(L, "serverSaveHour", 5);
+		integer[WORLD_TYPE] = getGlobalNumber(L, "worldType", 0);
 
 		///boolean[FIRST_BOOLEAN_CONFIG] = getGlobalBoolean(L, "firstBooleanConfig", true);
 	}

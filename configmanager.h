@@ -58,7 +58,12 @@ class ConfigManager
 		{
 			PORT = 0,
 			GAMEPORT,
+			MAX_PLAYERS,
+			MAX_PLAYERS_NEWBIES,
+			PREM_BUFFER,
+			RESERVED_PREM_NEWBIES,
 			SERVERSAVE_H,
+			WORLD_TYPE,
 			LAST_INTEGER_CONFIG /* this must be the last one */
 		};
 
