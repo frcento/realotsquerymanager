@@ -15,16 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-#include <stdio.h>
-#ifdef _WIN32
-#pragma warning(disable:4786)
-#endif
 
+#include <stdio.h>
 #include <string>
 #include <map>
+
 #ifdef WIN32
-#include <config-win.h>
-#include <mysql.h>
+#pragma warning(disable:4786)
+#include <mysql/mysql.h>
 #else
 #include <stdio.h>
 #include <stdlib.h>

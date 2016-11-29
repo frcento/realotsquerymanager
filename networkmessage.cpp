@@ -8,8 +8,11 @@
 //#include <iostream.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/ioctl.h>
 #include <string.h>
+
+#ifndef WIN32
+#include <sys/ioctl.h>
+#endif
 
 using namespace std;
 

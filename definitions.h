@@ -7,19 +7,29 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+#include <stdint.h>
+#include <errno.h>
+
+#ifndef WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <stdint.h>
-#include <errno.h>
+#else
+#include <winsock2.h>
+#endif
 
 #include <fcntl.h>
 #include <signal.h>
 #include <errno.h>
 
-#define SOCKET_ERROR -1
-#define ERROR_EINTR EINTR
+#ifndef SOCKET_ERROR
+	#define SOCKET_ERROR -1
+#endif
+
+#ifndef ERROR_EINTR
+	#define ERROR_EINTR EINTR
+#endif
 
 #ifndef SOCKET
 	#define SOCKET int

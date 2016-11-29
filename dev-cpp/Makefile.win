@@ -1,0 +1,37 @@
+# Project: realotsquerymanager
+# Makefile created by Dev-C++ 5.9.2
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = obj/database.o obj/main.o obj/networkmessage.o obj/sqlwrapper.o
+LINKOBJ  = obj/database.o obj/main.o obj/networkmessage.o obj/sqlwrapper.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -lmysql -lws2_32 -m32 -s
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = ../bin/realotsquerymanager.exe
+CXXFLAGS = $(CXXINCS) -Os -m32 -std=gnu++11
+CFLAGS   = $(INCS) -Os -m32 -std=gnu++11
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+obj/database.o: ../database.cpp
+	$(CPP) -c ../database.cpp -o obj/database.o $(CXXFLAGS)
+
+obj/main.o: ../main.cpp
+	$(CPP) -c ../main.cpp -o obj/main.o $(CXXFLAGS)
+
+obj/networkmessage.o: ../networkmessage.cpp
+	$(CPP) -c ../networkmessage.cpp -o obj/networkmessage.o $(CXXFLAGS)
+
+obj/sqlwrapper.o: ../sqlwrapper.cpp
+	$(CPP) -c ../sqlwrapper.cpp -o obj/sqlwrapper.o $(CXXFLAGS)

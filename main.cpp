@@ -15,13 +15,16 @@
 #include <mysql/mysql.h>
 #include "database.h"
 #include "query.h"
-#include <sys/socket.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
-#include <sys/ioctl.h>
 #include <ctime>    // For time()
 #include <cstdlib>  // For srand() and rand()
+
+#ifndef WIN32
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#endif
 
 #include <iostream>
 using namespace std;
@@ -79,7 +82,7 @@ std::cout << "OTServ QueryManager" << std::endl;
 std::cout << "--------------------" << std::endl;
 std::cout << ":: Connecting to the MySQL database...";
 std::cout << "[done]" << std::endl;
-std::cout << ":: Starting OTServ QueryManager..." << std::endl;
+std::cout << ":: Starting OTServ QueryManager...";
 
 // start the server listen...
 while(true){
@@ -91,18 +94,39 @@ while(true){
 	local_adress.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
 	// first we create a new socket
+	#ifdef WIN32
+	SOCKET listen_socket;
+	WSADATA wsa;
+
+    if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
+    {
+        printf("Failed. Error Code : %d",WSAGetLastError());
+        return 1;
+    }
+		
+	if(INVALID_SOCKET == (listen_socket = socket(AF_INET, SOCK_STREAM, 0))){
+		std::cout << listen_socket << std::endl;
+		return -1;
+	}
+	#else
 	SOCKET listen_socket = socket(AF_INET, SOCK_STREAM, 0);
 
 	if(listen_socket <= 0){
-	return -1;
+		return -1;
 	}
-
+	#endif
+	
 	int yes = 1;
 	// lose the pesky "Address already in use" error message
+	#ifdef WIN32
+	if(setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes)) == -1){
+	#else
 	if(setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int)) == -1){
-	std::cout << "Unable to set socket options!" << std::endl;
+	#endif
+		std::cout << "Unable to set socket options!" << std::endl;
 	return -1;
 	}
+	
 	//fcntl (listen_socket, F_SETFL, O_NONBLOCK);
 	// bind socket on port
 	if(bind(listen_socket, (struct sockaddr*)&local_adress, sizeof(struct sockaddr_in)) < 0){
