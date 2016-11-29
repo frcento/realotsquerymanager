@@ -59,23 +59,17 @@ THREAD_RETURN ConnectionHandler(void* dat);
 
 /* Database Connection */
 
-#define host    "localhost"
-#define username  "otserv"
-#define dbpass    "Cz7u89dmyPzHDNEL"
-#define database  "otserv"
+std::string host = "localhost";
+std::string username = "root";
+std::string password = "";
+std::string database = "realots";
 
 /* Configuration section */
 
-std::string q_world        = "otserv";
+std::string q_world        = "RealOTS";
 unsigned short portNumber  = 17778;
 unsigned short servPort    = 7172;
-unsigned short rebootTime  = 6;
-
-void connect_to_db() {
-	Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
-	Query q(db);
-}
-
+unsigned short rebootTime  = 18;
 
 int main(int argc, char *argv[])
 {
@@ -94,7 +88,7 @@ int main(int argc, char *argv[])
 
 		local_adress.sin_family      = AF_INET;
 		local_adress.sin_port        = htons(portNumber);
-		local_adress.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+		local_adress.sin_addr.s_addr = inet_addr("0.0.0.0"); // htonl(INADDR_LOOPBACK);
 
 		// first we create a new socket
 		#ifdef WIN32
@@ -254,8 +248,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		}
 		else if(packetId == 0x14)
 		{
-			//connect_to_db();
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			std::cout << "Received playerLogin packet (0x14)" << std::endl;
 			NetworkMessage writeMsg;
@@ -714,7 +707,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		}
 		else if(packetId == 0x15)
 		{
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			std::cout << "Received playerLogout packet (0x15)" << std::endl;
 			//parseDebug(msg);
@@ -748,7 +741,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			std::cout << "Received Banishment Packet (0x19)" << std::endl;
 			parseDebug(msg);
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 
 			unsigned int gmID = msg.getU32();
@@ -827,7 +820,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 
 			std::cout << ":: Gamemaster ID: " << dec << gmID << " string: " << bannedStr << " ip: " << ip << " << violation: " << reasonStr << " comment: " << commentStr << std::endl;
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 
 			q.get_result("SELECT account_nr,account_id FROM players WHERE charname = '" + Database::escapeString(bannedStr) + "'");
@@ -895,7 +888,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		else if (packetId == 0x1d)
 		{
 			std::cout << "Received logCharacterDeath packet (0x1d)" << std::endl;
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			NetworkMessage writeMsg;
 			//parseDebug(msg);
@@ -938,7 +931,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		}
 		else if(packetId == 0x21)
 		{
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			// Finish auctions.
 			std::cout << "Received FinishAuctions packet (0x21)" << std::endl;
@@ -991,7 +984,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			NetworkMessage writeMsg;
 			writeMsg.addByte(0x00);
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			q.get_result("SELECT id, house_id, transfer_to, gold FROM `house_transfer` WHERE done = 0");
 			int total = q.num_rows();
@@ -1053,7 +1046,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		}
 		else if(packetId == 0x24)
 		{
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			// FACC eviction
 			std::cout << "Received evictFreeAccounts packet (0x24)" << std::endl;
@@ -1083,7 +1076,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		}
 		else if(packetId == 0x25)
 		{
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			// Deleted char eviction
 			std::cout << "Received evictDeletedCharacters packet (0x25)" << std::endl;
@@ -1116,7 +1109,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		}
 		else if(packetId == 0x26)
 		{
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 
 			std::cout << "Received evictExGuildLeaders packet (0x26)" << std::endl;
@@ -1140,7 +1133,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		{
 			// getHouseOwners
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			std::cout << "Received getHouseOwners packet (0x2A)" << std::endl;
 	
@@ -1203,7 +1196,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			std::cout << "Paiduntil: " << dec << paid << endl;
 			std::cout << "Unknown: " << dec << unknown << endl;
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			q.get_result("SELECT player_id, paid_until FROM houses WHERE house_id = " + int2str(houseID));
 			if(q.fetch_row())
@@ -1262,7 +1255,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			std::cout << "Received deleteHouseOwner packet (0x29)" << std::endl;
 			parseDebug(msg);
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			unsigned short houseID  = msg.getU16();
 			unsigned char unknown = msg.getByte(); // Might be type of eviction
@@ -1281,7 +1274,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			std::cout << "Received banishIPAddress Packet (0x1c)" << std::endl;
 			parseDebug(msg);
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 
 			unsigned int gmID = msg.getU32();
@@ -1323,7 +1316,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		else if(packetId == 0x1e)
 		{
 			std::cout << "Received addBuddy packet (0x1e)" << std::endl;
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			unsigned int accountNumber = msg.getU32();
 			unsigned int buddyID = msg.getU32();
@@ -1356,7 +1349,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		else if(packetId == 0x1f)
 		{
 			std::cout << "Received removeBuddy packet (0x1f)" << std::endl;
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			unsigned int accountNumber = msg.getU32();
 			unsigned int buddyID = msg.getU32();
@@ -1438,7 +1431,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		else if(packetId == 0x2E)
 		{
 			// clearIsOnline
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			std::cout << "Received clearIsOnline packet (0x2E)" << std::endl;
 			parseDebug(msg);
@@ -1454,7 +1447,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		}
 		else if(packetId == 0x2F)
 		{
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			// createPlayerlist
 			std::cout << "Received createPlayerlist packet (0x2F)" << std::endl;
@@ -1517,7 +1510,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		{
 			std::cout << "Received logKilledCreatures packet (0x30)" << std::endl;
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 
 			// Num of creatures (2 bytes), length string (2b) string of creature, long killed by, long killed
@@ -1538,7 +1531,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		else if(packetId == 0x32)
 		{
 			// loadPlayers
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			std::cout << "Received loadPlayers packet (0x32)" << std::endl;
 
@@ -1579,7 +1572,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			std::cout << "Unknown1: " << dec << unknown << endl;
 			std::cout << "Unknown2: " << dec << unknown2 << endl;
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			q.get_result("SELECT house_id FROM house WHERE bidder_id = " + int2str(bidder));
 			if(q.fetch_row())
@@ -1598,7 +1591,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		{
 			std::cout << "Received loadWorldConfig packet (0x35)" << std::endl;
 
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			std::cout << "Determining WorldType" << std::endl;
 			NetworkMessage writeMsg;
@@ -1607,10 +1600,10 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			writeMsg.addByte(rebootTime); // Reboot time (0x09 = 09:00)
 
 			/* IP Address to bind, consider using inet_aton */
-			writeMsg.addByte(213);
-			writeMsg.addByte(163);
-			writeMsg.addByte(67);
-			writeMsg.addByte(173);
+			writeMsg.addByte(0);
+			writeMsg.addByte(0);
+			writeMsg.addByte(0);
+			writeMsg.addByte(0);
 			/* Port we listen to */
 			writeMsg.addU16(servPort);
 
@@ -1628,7 +1621,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		{
 			std::cout << "Received highscore packet (0xCB)" << std::endl;
 			//parseDebug(msg);
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 			unsigned char  unknown2 = msg.getByte();
 			unsigned int   unknown3 = msg.getU32();
@@ -1668,7 +1661,7 @@ THREAD_RETURN ConnectionHandler(void* dat)
 		{
 			std::cout << "Received createHighscores packet (0xCC)" << std::endl;
 			//parseDebug(msg);
-			Database db("localhost","otserv","Cz7u89dmyPzHDNEL","otserv");
+			Database db(host,username,password,database);
 			Query q(db);
 
 			q.execute("DELETE FROM highscores");
