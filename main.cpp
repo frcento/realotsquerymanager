@@ -2,8 +2,9 @@
 *   OTServ QueryManager, (c) 2011 Satan Claus Limited
 */
 
-#include "networkmessage.h"
+#include "configmanager.h"
 #include "definitions.h"
+#include "networkmessage.h"
 
 #include <string>
 #include <stdio.h>
@@ -17,6 +18,7 @@
 #include "query.h"
 #include <unistd.h>
 #include <fcntl.h>
+#include <iostream>
 #include <string.h>
 #include <ctime>    // For time()
 #include <cstdlib>  // For srand() and rand()
@@ -26,8 +28,8 @@
 #include <sys/ioctl.h>
 #endif
 
-#include <iostream>
 using namespace std;
+ConfigManager g_config;
 
 void log (std::string foo)
 {
@@ -64,21 +66,39 @@ std::string username = "root";
 std::string password = "";
 std::string database = "realots";
 
-/* Configuration section */
-
-std::string q_world        = "RealOTS";
-unsigned short portNumber  = 17778;
-unsigned short servPort    = 7172;
-unsigned short rebootTime  = 18;
-
 int main(int argc, char *argv[])
 {
 	std::cout << "--------------------" << std::endl;
 	std::cout << "OTServ QueryManager" << std::endl;
 	std::cout << "--------------------" << std::endl;
-	std::cout << ":: Connecting to the MySQL database...";
+
+	// read global config
+	std::cout << ":: Loading config... ";
+	if(!g_config.load())
+	{
+		std::cout << "[ERROR] Unable to load config.lua!" << std::endl;
+		return 0;
+	}
+	
+	host = g_config.getString(ConfigManager::MYSQL_HOST);
+	username = g_config.getString(ConfigManager::MYSQL_USER);
+	password = g_config.getString(ConfigManager::MYSQL_PASS);
+	database = g_config.getString(ConfigManager::MYSQL_DB);
+
 	std::cout << "[done]" << std::endl;
-	std::cout << ":: Starting OTServ QueryManager...";
+	
+	// connect to database
+	std::cout << ":: Connecting to the MySQL database... ";
+	Database db(host,username,password,database);
+	if(!db.Connected())
+	{
+		std::cout << "[ERROR]" << std::endl;
+		std::cout << "Failed to connect to database, read doc/MYSQL_HELP for information." << std::endl;
+		return 0;
+	}
+	std::cout << "[done]" << std::endl;
+
+	std::cout << ":: Starting OTServ QueryManager... ";
 
 	// start the server listen...
 	while(true)
@@ -87,8 +107,8 @@ int main(int argc, char *argv[])
 		memset(&local_adress, 0, sizeof(sockaddr_in)); // zero the struct
 
 		local_adress.sin_family      = AF_INET;
-		local_adress.sin_port        = htons(portNumber);
-		local_adress.sin_addr.s_addr = inet_addr("0.0.0.0"); // htonl(INADDR_LOOPBACK);
+		local_adress.sin_port        = htons(g_config.getNumber(ConfigManager::PORT));
+		local_adress.sin_addr.s_addr = inet_addr((g_config.getString(ConfigManager::IP)).c_str());
 
 		// first we create a new socket
 		#ifdef WIN32
@@ -139,6 +159,7 @@ int main(int argc, char *argv[])
 		}
 
 		std::cout << "[done]" << std::endl;
+		
 		while(true)
 		{
 			fd_set listen_set;
@@ -1597,15 +1618,24 @@ THREAD_RETURN ConnectionHandler(void* dat)
 			NetworkMessage writeMsg;
 			writeMsg.addByte(0x00);       // Error code
 			writeMsg.addByte(0);          // World Type (0 = normal pvp, 1 = non-pvp, 2 = pvp enforced)
-			writeMsg.addByte(rebootTime); // Reboot time (0x09 = 09:00)
+			writeMsg.addByte(g_config.getNumber(ConfigManager::SERVERSAVE_H)); // Reboot time (0x09 = 09:00)
 
 			/* IP Address to bind, consider using inet_aton */
-			writeMsg.addByte(0);
-			writeMsg.addByte(0);
-			writeMsg.addByte(0);
-			writeMsg.addByte(0);
+
+			char* ipstr = strdup(g_config.getString(ConfigManager::GAMEIP).c_str());
+			char *marker, *ret;
+			ret = strtok_r(ipstr, ".", &marker);
+			writeMsg.addByte((unsigned char)strtod(ret, NULL));
+			ret = strtok_r(NULL, ".", &marker);
+			writeMsg.addByte((unsigned char)strtod(ret, NULL));
+			ret = strtok_r(NULL, ".", &marker);
+			writeMsg.addByte((unsigned char)strtod(ret, NULL));
+			ret = strtok_r(NULL, ".", &marker);
+			writeMsg.addByte((unsigned char)strtod(ret, NULL));
+			free(ipstr);
+
 			/* Port we listen to */
-			writeMsg.addU16(servPort);
+			writeMsg.addU16(g_config.getNumber(ConfigManager::GAMEPORT));
 
 			/* Some free account / premmy player buffers, not a clue which are which */
 			// Reboot + Port + PremBuffer + MaxN00bs + PremN00bs

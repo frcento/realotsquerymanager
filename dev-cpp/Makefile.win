@@ -4,9 +4,9 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = obj/database.o obj/main.o obj/networkmessage.o obj/sqlwrapper.o
-LINKOBJ  = obj/database.o obj/main.o obj/networkmessage.o obj/sqlwrapper.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -lmysql -lws2_32 -m32 -s
+OBJ      = obj/database.o obj/main.o obj/networkmessage.o obj/sqlwrapper.o obj/configmanager.o
+LINKOBJ  = obj/database.o obj/main.o obj/networkmessage.o obj/sqlwrapper.o obj/configmanager.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -llua5.1 -lmysql -lws2_32 -m32 -s
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
 BIN      = ../bin/realotsquerymanager.exe
@@ -35,3 +35,6 @@ obj/networkmessage.o: ../networkmessage.cpp
 
 obj/sqlwrapper.o: ../sqlwrapper.cpp
 	$(CPP) -c ../sqlwrapper.cpp -o obj/sqlwrapper.o $(CXXFLAGS)
+
+obj/configmanager.o: ../configmanager.cpp
+	$(CPP) -c ../configmanager.cpp -o obj/configmanager.o $(CXXFLAGS)

@@ -1,5 +1,5 @@
 [Project]
-FileName=querymananger.dev
+FileName=realotsquerymanager.dev
 Name=realotsquerymanager
 Type=1
 Ver=2
@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=-lmysql_@@_-lws2_32_@@_
+Linker=-llua5.1_@@_-lmysql_@@_-lws2_32_@@_
 IsCpp=1
 Icon=
 ExeOutput=..\bin
@@ -19,7 +19,7 @@ ObjectOutput=obj
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=querymananger.exe
+OverrideOutputName=realotsquerymanager.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
 CompilerSettings=000000d1g0000000000001000
-UnitCount=9
+UnitCount=11
 
 [VersionInfo]
 Major=1
@@ -132,6 +132,26 @@ BuildCmd=
 
 [Unit9]
 FileName=..\sqlwrapper.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit10]
+FileName=..\configmanager.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=..\configmanager.h
 CompileCpp=1
 Folder=
 Compile=1
