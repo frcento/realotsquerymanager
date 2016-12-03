@@ -14,9 +14,8 @@
 	gameIp = "0.0.0.0" -- use 0.0.0.0 to bind all interfaces
 	gamePort = 7172
 	serverSaveHour = 5
-	worldType = 0 -- 0 = normal pvp, 1 = non-pvp, 2 = pvp enforced
+	worldType = 0 -- normal pvp = 0, non-pvp = 1, pvp enforced = 2
 	maxPlayers = 1500
 	maxPlayersNewbies = 500
 	premBuffer = 900
 	reservedPremiumNewbies = 250
-	
