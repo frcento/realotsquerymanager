@@ -6,6 +6,7 @@
 #include "definitions.h"
 #include "networkmessage.h"
 
+#include <cstring>
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>

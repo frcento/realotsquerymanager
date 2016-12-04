@@ -1,2 +1,2 @@
 all:
-	g++ main.cpp sqlwrapper.cpp database.cpp networkmessage.cpp configmanager.cpp -ggdb -o querymanager -I/usr/local/include/ -L/usr/compat/linux/lib/obsolete/ -llua5.1 -lpthread -L/usr/lib/mysql/ -lmysqlclient
+	g++ configmanager.cpp main.cpp sqlwrapper.cpp database.cpp networkmessage.cpp -std=c++11 -ggdb -o bin/realotsquerymanager -I/usr/local/include/ -L/usr/compat/linux/lib/obsolete/ -llua -lpthread -L/usr/lib64/mysql/ -lmysqlclient
